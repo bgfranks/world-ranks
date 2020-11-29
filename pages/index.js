@@ -2,6 +2,7 @@ import Layout from "../components/Layout/Layout"
 import SearchInput from "../components/SearchInput"
 
 import styled from "styled-components"
+import CountriesTable from "../components/CountriesTable"
 
 const Count = styled.div`
   margin: 12px 0;
@@ -13,6 +14,7 @@ export default function Home({ countries }) {
     <Layout>
       <Count>Found {countries.length} countries</Count>
       <SearchInput placeholder="Search by Name, Region, or SubRegion" />
+      <CountriesTable countries={countries} />
     </Layout>
   )
 }
