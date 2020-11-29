@@ -1,6 +1,8 @@
 import Head from "next/head"
 import styled from "styled-components"
 
+import { GlobalStyles } from "../../styles/GlobalVariables"
+
 const LayoutContainer = styled.div`
   padding: 24px;
   height: 100vh;
@@ -27,6 +29,7 @@ const LayoutContainer = styled.div`
 const Layout = ({ children, title = "World Ranks" }) => {
   return (
     <LayoutContainer>
+      <GlobalStyles />
       <Head>
         <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />
