@@ -127,14 +127,14 @@ const CountriesTable = ({ countries }) => {
           onClick={() => setValueAndDirection("name")}
         >
           <div>Name</div>
-          <SortArrow direction={direction} />
+          {value === "name" && <SortArrow direction={direction} />}
         </button>
         <button
           className="population-button"
           onClick={() => setValueAndDirection("population")}
         >
           <div>Population</div>
-          <SortArrow direction={direction} />
+          {value === "population" && <SortArrow direction={direction} />}
         </button>
       </CountriesHeading>
       {orderedCountries.map((country) => (
