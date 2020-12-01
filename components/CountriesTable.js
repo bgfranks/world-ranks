@@ -1,3 +1,9 @@
+import { useState } from "react"
+import {
+  DirectionsBoatTwoTone,
+  KeyboardArrowDownRounded,
+  KeyboardArrowUpRounded,
+} from "@material-ui/icons"
 import styled from "styled-components"
 
 const CountriesHeading = styled.div`
@@ -16,10 +22,21 @@ const CountriesHeading = styled.div`
     font-weight: 500;
     outline: none;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .name-button {
-    text-align: left;
+    justify-content: flex-start;
+  }
+
+  .heading-arrow {
+    color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
   }
 `
 
@@ -49,18 +66,78 @@ const CountryContainer = styled.div`
   }
 `
 
+const orderBy = (countries, value, direction) => {
+  if (direction === "asc") {
+    return [...countries].sort((a, b) => (a[value] > b[value] ? 1 : -1))
+  }
+
+  if (direction === "desc") {
+    return [...countries].sort((a, b) => (a[value] > b[value] ? -1 : 1))
+  }
+
+  return countries
+}
+
+const SortArrow = ({ direction }) => {
+  if (!direction) {
+    return <></>
+  }
+
+  if (direction === "asc") {
+    return (
+      <div className="heading-arrow">
+        <KeyboardArrowDownRounded />
+      </div>
+    )
+  } else {
+    return (
+      <div className="heading-arrow">
+        <KeyboardArrowUpRounded />
+      </div>
+    )
+  }
+}
+
 const CountriesTable = ({ countries }) => {
+  const [direction, setDirection] = useState()
+  const [value, setValue] = useState()
+
+  const orderedCountries = orderBy(countries, value, direction)
+
+  const switchDirection = () => {
+    if (!direction) {
+      setDirection("desc")
+    } else if (direction === "desc") {
+      setDirection("asc")
+    } else {
+      setDirection(null)
+    }
+  }
+
+  const setValueAndDirection = (value) => {
+    switchDirection()
+    setValue(value)
+  }
+
   return (
     <div>
       <CountriesHeading>
-        <button className="name-button">
+        <button
+          className="name-button"
+          onClick={() => setValueAndDirection("name")}
+        >
           <div>Name</div>
+          <SortArrow direction={direction} />
         </button>
-        <button className="population-button">
+        <button
+          className="population-button"
+          onClick={() => setValueAndDirection("population")}
+        >
           <div>Population</div>
+          <SortArrow direction={direction} />
         </button>
       </CountriesHeading>
-      {countries.map((country) => (
+      {orderedCountries.map((country) => (
         <CountryContainer key={country.name}>
           <div className="country-name">{country.name}</div>
           <div className="country-population">{country.population}</div>
