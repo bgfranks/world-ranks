@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import Layout from "../../components/Layout/Layout"
@@ -61,9 +62,48 @@ const Details = styled.div`
   .label {
     color: var(--text-color-secondary);
   }
+
+  .border-countries {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 24px;
+    padding: 2rem 5rem;
+
+    .border-country {
+      text-align: center;
+      margin: 10px;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 8px;
+      height: 80%;
+    }
+  }
 `
 
+const getCountry = async (id) => {
+  const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${id}`)
+  const country = await res.json()
+
+  return country
+}
+
 const Country = ({ country }) => {
+  const [borders, setBorders] = useState([])
+
+  const getBorders = async () => {
+    const borders = await Promise.all(
+      country.borders.map((border) => getCountry(border))
+    )
+
+    setBorders(borders)
+  }
+
+  useEffect(() => {
+    getBorders()
+  }, [])
+
   return (
     <Layout title={country.name}>
       <CountryContainer>
@@ -113,6 +153,14 @@ const Country = ({ country }) => {
           <div className="label">Gini</div>
           <div className="value">{country.gini}%</div>
         </div>
+        <div className="border-countries">
+          {borders.map(({ flag, name }) => (
+            <div className="border-country">
+              <img src={flag} alt={name} />
+              <div className="border-name">{name}</div>
+            </div>
+          ))}
+        </div>
       </Details>
     </Layout>
   )
@@ -121,8 +169,7 @@ const Country = ({ country }) => {
 export default Country
 
 export const getServerSideProps = async ({ params }) => {
-  const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${params.id}`)
-  const country = await res.json()
+  const country = await getCountry(params.id)
 
   return {
     props: { country },
